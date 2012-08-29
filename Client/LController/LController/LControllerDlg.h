@@ -7,14 +7,16 @@
 #include <cv.h>
 #include <cxcore.h>
 #include "afxwin.h"
+#include "DataSocket.h"
 
+#define PORT 4001
 // CLControllerDlg 대화 상자
 class CLControllerDlg : public CDialogEx
 {
 // 생성입니다.
 public:
 	CLControllerDlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
-
+	CDataSocket dataSocket;
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_LCONTROLLER_DIALOG };
 
@@ -31,6 +33,8 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg LRESULT OnCloseSocket(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnReceiveData(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);

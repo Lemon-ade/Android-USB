@@ -112,7 +112,19 @@ BOOL CLControllerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	
+	if(!dataSocket.Create())
+	{
+		return FALSE;
+	}
 
+	// IP와 포트로 연결에 실패하는 경우
+	if(!dataSocket.Connect("192.168.0.14", PORT))
+	{
+		dataSocket.Close();
+		return FALSE;
+	}
+	
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
