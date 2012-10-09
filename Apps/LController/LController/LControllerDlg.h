@@ -9,8 +9,8 @@
 #include "afxwin.h"
 #include "DataSocket.h"
 
-#define PORT 3600
-#define KEYBOARD_PORT 4001
+#define KEYBOARD_PORT 3600
+#define PICTURE_PORT 4001
 #define MAXLINE 1024
 #define INPUT_UP 1
 #define INPUT_DOWN 2
@@ -25,6 +25,7 @@ class CLControllerDlg : public CDialogEx
 public:
 	CLControllerDlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
 	CDataSocket dataSocket;
+	CDataSocket pictureSocket;
 	CString m_strServerAddress;
 	typedef struct {
 		long filesize;

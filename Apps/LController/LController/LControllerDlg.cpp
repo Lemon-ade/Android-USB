@@ -357,6 +357,7 @@ void CLControllerDlg::OnBnClickedWcam()
 		GetDlgItem(IDWCAM)->SetWindowText(_T("▶"));
 		//cvReleaseCapture(&capture);
 		dataSocket.Close();
+		pictureSocket.Close();
 		viewState = FALSE;
 		KillTimer(1);
 	}
@@ -368,46 +369,63 @@ void CLControllerDlg::OnBnClickedWcam()
 		//m_strServerAddress = "192.168.0.22";
 		// Nexus S
 		m_strServerAddress = "192.168.0.29";
+
+		// keyboard connect
 		if(dataSocket.m_hSocket != INVALID_SOCKET)
 		{
-			AfxMessageBox(TEXT("이미 서버에 접속 되어있습니다."));
+			AfxMessageBox(TEXT("이미 키보드가 연결 되어 있습니다."));
 			return;
 		}
 		if(!dataSocket.Create())
 		{
-			AfxMessageBox(TEXT("소켓 생성 실패"));
+			AfxMessageBox(TEXT("소켓 생성 실패 - 1"));
 			GetDlgItem(IDWCAM)->SetWindowText(_T("▶"));
 			return;
 		}
 		// IP와 포트로 연결에 실패하는 경우
-		if(!dataSocket.Connect(m_strServerAddress, PORT))
+		if(!dataSocket.Connect(m_strServerAddress, KEYBOARD_PORT))
 		{
 			dataSocket.Close();
-			AfxMessageBox(TEXT("연결 실패"));
+			AfxMessageBox(TEXT("키보드 연결 실패"));
 			GetDlgItem(IDWCAM)->SetWindowText(_T("▶"));
 			return;
 		}
-		/*
-		if(!capture) {
-			AfxMessageBox(TEXT("연결된 웹캠장치가 없습니다"));
+
+		// picture connect
+		if(pictureSocket.m_hSocket != INVALID_SOCKET)
+		{
+			AfxMessageBox(TEXT("이미 화면이 연결 되어 있습니다."));
+			return;
+		}
+		if(!pictureSocket.Create())
+		{
+			dataSocket.Close();
+			AfxMessageBox(TEXT("소켓 생성 실패 - 2"));
 			GetDlgItem(IDWCAM)->SetWindowText(_T("▶"));
+			return;
 		}
+		// IP와 포트로 연결에 실패하는 경우
+		if(!pictureSocket.Connect(m_strServerAddress, PICTURE_PORT))
+		{
+			dataSocket.Close();
+			pictureSocket.Close();
+			AfxMessageBox(TEXT("화면 연결 실패"));
+			GetDlgItem(IDWCAM)->SetWindowText(_T("▶"));
+			return;
+		}
+
+		/* // 해상도설정
+		cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 200); 
+		cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 400);
 		*/
-		else {
-		
-			/* // 해상도설정
-			cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 200); 
-			cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 400);
-			*/
 
-			// 타이머 속도설정 선택
-			//SetTimer(1,800,NULL);
-			//SetTimer(1,((double)1/12)*1000,NULL);
+		// 타이머 속도설정 선택
+		SetTimer(1,2000,NULL);
+		//SetTimer(1,((double)1/12)*1000,NULL);
 
-			viewState = TRUE;
-			//AfxMessageBox(TEXT("연결 성공"));
-			GetDlgItem(IDWCAM)->SetWindowText(_T("■"));
-		}
+		viewState = TRUE;
+		//AfxMessageBox(TEXT("연결 성공"));
+		GetDlgItem(IDWCAM)->SetWindowText(_T("■"));
 	}
 }
 LRESULT CLControllerDlg::OnReceiveData(WPARAM wParam, LPARAM lParam)
@@ -434,7 +452,7 @@ LRESULT CLControllerDlg::OnCloseSocket(WPARAM wParam, LPARAM lParam)
 
 int CLControllerDlg::send_msg(CString data)
 {
-	return dataSocket.Send(data, data.GetLength()+1);
+	return pictureSocket.Send(data, data.GetLength()+1);
 }
 
 
@@ -446,7 +464,7 @@ int CLControllerDlg::recv_msg(void)
 	char* pData = NULL;
 	
 	memset((void*)&bh, 0x00, sizeof(bh));
-	ret = dataSocket.Receive(&bh, sizeof(bh), 0);
+	ret = pictureSocket.Receive(&bh, sizeof(bh), 0);
 	if(ret<0) {
 		return -1;
 	}
@@ -473,7 +491,7 @@ int CLControllerDlg::recv_msg(void)
 	ret = 0;
 	pData = image->imageData;
 	do {
-		ret = dataSocket.Receive(pData, imgSize, 0);
+		ret = pictureSocket.Receive(pData, imgSize, 0);
 		if(ret<0) {
 			return -1;
 		}
