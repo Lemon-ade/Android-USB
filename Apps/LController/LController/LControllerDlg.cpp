@@ -51,6 +51,7 @@ END_MESSAGE_MAP()
 CLControllerDlg::CLControllerDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CLControllerDlg::IDD, pParent)
 	, str_loc(_T(""))
+	, m_strSendData(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -60,6 +61,7 @@ void CLControllerDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_STR_LOC, str_loc);
 	DDX_Control(pDX, IDWCAM, mBtnCam);
+	DDX_Text(pDX, IDC_EDIT_SEND_DATA, m_strSendData);
 }
 
 BEGIN_MESSAGE_MAP(CLControllerDlg, CDialogEx)
@@ -74,6 +76,7 @@ BEGIN_MESSAGE_MAP(CLControllerDlg, CDialogEx)
 	ON_WM_RBUTTONUP()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDWCAM, &CLControllerDlg::OnBnClickedWcam)
+	ON_BN_CLICKED(IDC_BTNSEND, &CLControllerDlg::OnBnClickedBtnsend)
 END_MESSAGE_MAP()
 
 
@@ -326,7 +329,6 @@ void CLControllerDlg::OnTimer(UINT_PTR nIDEvent)
 			AfxMessageBox(TEXT("서버와 연결이 끊겼습니다."));
 			return;
 		}
-		
 		//cvGrabFrame(capture);
 		//image = cvQueryFrame(capture);
 		RECT rect;
@@ -398,8 +400,8 @@ void CLControllerDlg::OnBnClickedWcam()
 			cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 400);
 			*/
 
-			// 타이머 속도설정
-			SetTimer(1,800,NULL);
+			// 타이머 속도설정 선택
+			//SetTimer(1,800,NULL);
 			//SetTimer(1,((double)1/12)*1000,NULL);
 
 			viewState = TRUE;
@@ -530,40 +532,49 @@ void CLControllerDlg::inputDirectioinKey(int key)
 	}	
 
 	sendMsg(strCmd);
-
-	GetDlgItem(IDC_STR_LOC)->SetFocus();
-	GetDlgItem(IDC_STR_LOC)->SendMessage(WM_KILLFOCUS, NULL); 	
 }
 
 
 BOOL CLControllerDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	switch( pMsg->wParam ) {
-		case VK_UP:
-			inputDirectioinKey(INPUT_UP);
-			break;
-		case VK_DOWN:
-			inputDirectioinKey(INPUT_DOWN);
-			break;
-		case VK_LEFT:
-			inputDirectioinKey(INPUT_LEFT);
-			break;
-		case VK_RIGHT:
-			inputDirectioinKey(INPUT_RIGHT);
-			break;
-		case VK_RETURN:
-			inputDirectioinKey(INPUT_ENTER);
+	if ((GetFocus()->GetDlgCtrlID() == IDC_EDIT_SEND_DATA)) {
+		switch( pMsg->wParam ) {
+			case VK_RETURN:
+				OnBnClickedBtnsend();
 				return TRUE;
-		case VK_ESCAPE:
-			// 뒤로가기 명령 전송
-			inputDirectioinKey(INPUT_BACK);
-			// ESC키는 원래 종료를 하기때문에 이 현상을 막기위해 retrun TRUE를 해줘야됨
-			return TRUE; 
-		default:
-			// no effect
-			break;
-	}
+			case VK_ESCAPE:
+				GetDlgItem(IDC_STR_LOC)->SetFocus();
+				GetDlgItem(IDC_STR_LOC)->SendMessage(WM_KILLFOCUS, NULL); 
+				return TRUE; 
+		}
+	} else if (pMsg->message == WM_KEYDOWN) {
+		switch( pMsg->wParam ) {
+			case VK_UP:
+				inputDirectioinKey(INPUT_UP);
+				return TRUE;
+			case VK_DOWN:
+				inputDirectioinKey(INPUT_DOWN);
+				return TRUE;
+			case VK_LEFT:
+				inputDirectioinKey(INPUT_LEFT);
+				return TRUE;
+			case VK_RIGHT:
+				inputDirectioinKey(INPUT_RIGHT);
+				return TRUE;
+			case VK_RETURN:
+				inputDirectioinKey(INPUT_ENTER);
+				return TRUE;
+			case VK_ESCAPE:
+				// 뒤로가기 명령 전송
+				inputDirectioinKey(INPUT_BACK);
+				// ESC키는 원래 종료를 하기때문에 이 현상을 막기위해 retrun TRUE를 해줘야됨
+				return TRUE; 
+			default:
+				// no effect
+				break;
+			}
+		}
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -602,4 +613,19 @@ CString CLControllerDlg::AnsiToUTF8RetCString(CString inputStr)
 	strConvert = szRetValue;
 
 	return strConvert;
+}
+
+
+void CLControllerDlg::OnBnClickedBtnsend()
+{
+	UpdateData();
+	CString strSend;
+	strSend.Format("%s", m_strSendData);
+
+	// Ansi를 UTF8로 변경하고 CString으로 리턴된 것을 전송
+	sendMsg(strSend);
+	
+	GetDlgItem(IDC_EDIT_SEND_DATA)->SetFocus();
+	m_strSendData = "";
+	UpdateData(FALSE);
 }

@@ -9,8 +9,8 @@
 #include "afxwin.h"
 #include "DataSocket.h"
 
-#define PORT 4001
-#define KEYBOARD_PORT 3600
+#define PORT 3600
+#define KEYBOARD_PORT 4001
 #define MAXLINE 1024
 #define INPUT_UP 1
 #define INPUT_DOWN 2
@@ -85,4 +85,6 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	void sendMsg(CString strMsg);
 	CString AnsiToUTF8RetCString(CString inputStr);
+	CString m_strSendData;
+	afx_msg void OnBnClickedBtnsend();
 };
