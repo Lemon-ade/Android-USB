@@ -347,11 +347,11 @@ int send_dev(int sockfd, struct usbdevfs_urb *urb) {
 	return ret; 
 }
 */
-int send_dev(int sockfd, char* cmd, int cmd_size) {
-	int ret;
-	ret = send(sockfd, cmd, cmd_size, 0);
+int send_dev(int sockfd, char* num, int size) {
+	int ret = 0;
+	ret = send(sockfd, num, size, 0);
 	if(ret<=0) {
-		info("send_dev() send error (%s) (size:%d)", cmd, cmd_size);
+		info("send usbdevfs error");
 		return -1;
 	}
 	return ret; 
