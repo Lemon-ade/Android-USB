@@ -1,18 +1,14 @@
-﻿빌드 시작: 2012-10-09 오후 3:06:15
+﻿빌드 시작: 2012-10-10 오후 4:48:52
      1>2 노드의 "C:\Users\IG\lemonade\Android-USB\Apps\katalkPCLinker_windows\KatalkPCLinker\KatalkPCLinker.vcxproj" 프로젝트(build 대상)입니다.
-     1>PrepareForBuild:
-         "C:\Users\IG\lemonade\Android-USB\Apps\katalkPCLinker_windows\Release\" 디렉터리를 만들고 있습니다.
-       InitializeBuildStatus:
+     1>InitializeBuildStatus:
          "AlwaysCreate"이(가) 지정되었기 때문에 "Release\KatalkPCLinker.unsuccessfulbuild"을(를) 만들고 있습니다.
        ClCompile:
-         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _MBCS /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\KatalkPCLinker.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _MBCS /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\KatalkPCLinker.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt DataSocket.cpp KatalkPCLinker.cpp KatalkPCLinkerDlg.cpp
+         모든 출력이 최신 상태입니다.
+         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _MBCS /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\KatalkPCLinker.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt DataSocket.cpp KatalkPCLinker.cpp
          DataSocket.cpp
          KatalkPCLinker.cpp
-         KatalkPCLinkerDlg.cpp
        ResourceCompile:
-         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D NDEBUG /l"0x0412" /IRelease\ /nologo /fo"Release\KatalkPCLinker.res" KatalkPCLinker.rc 
+         모든 출력이 최신 상태입니다.
        Link:
          c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\IG\lemonade\Android-USB\Apps\katalkPCLinker_windows\Release\KatalkPCLinker.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /ManifestFile:"Release\KatalkPCLinker.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\IG\lemonade\Android-USB\Apps\katalkPCLinker_windows\Release\KatalkPCLinker.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\IG\lemonade\Android-USB\Apps\katalkPCLinker_windows\Release\KatalkPCLinker.lib" /MACHINE:X86 Release\KatalkPCLinker.res
          Release\DataSocket.obj
@@ -31,4 +27,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:17.36
+경과 시간: 00:00:28.91

@@ -260,8 +260,6 @@ void CKatalkPCLinkerDlg::OnBnClickedButtonStop()
 
 void CKatalkPCLinkerDlg::OnBnClickedButtonSend()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	
 	// 입력한 메세지를 strSend에 할당
 	UpdateData();
 	CString strSend;
@@ -278,8 +276,6 @@ void CKatalkPCLinkerDlg::OnBnClickedButtonSend()
 // 키보드 제어를 미리 가로채서 처리해주는 메소드(재정의함)
 BOOL CKatalkPCLinkerDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	
 	// 키가 눌렸을때
 	if(pMsg->message == WM_KEYDOWN)
 	{

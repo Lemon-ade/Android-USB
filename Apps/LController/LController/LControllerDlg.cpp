@@ -390,7 +390,7 @@ void CLControllerDlg::OnBnClickedWcam()
 			GetDlgItem(IDWCAM)->SetWindowText(_T("▶"));
 			return;
 		}
-
+		
 		// picture connect
 		if(pictureSocket.m_hSocket != INVALID_SOCKET)
 		{
@@ -413,7 +413,7 @@ void CLControllerDlg::OnBnClickedWcam()
 			GetDlgItem(IDWCAM)->SetWindowText(_T("▶"));
 			return;
 		}
-
+		
 		/* // 해상도설정
 		cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 200); 
 		cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 400);
@@ -428,6 +428,7 @@ void CLControllerDlg::OnBnClickedWcam()
 		GetDlgItem(IDWCAM)->SetWindowText(_T("■"));
 	}
 }
+
 LRESULT CLControllerDlg::OnReceiveData(WPARAM wParam, LPARAM lParam)
 {
 	char Rcvdata[MAXLINE];
@@ -441,7 +442,9 @@ LRESULT CLControllerDlg::OnReceiveData(WPARAM wParam, LPARAM lParam)
 	if(!strcmp(strMsg, "2")){
 		AfxMessageBox(TEXT(strMsg));
 	}
+	
 	return 0;
+	
 }
 
 // 서버와의 연결 종료 처리
@@ -555,16 +558,24 @@ void CLControllerDlg::inputDirectioinKey(int key)
 
 BOOL CLControllerDlg::PreTranslateMessage(MSG* pMsg)
 {
+	CWnd * pWnd = GetFocus ();
+
+	if (pWnd == NULL)
+	return FALSE;
+
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	if ((GetFocus()->GetDlgCtrlID() == IDC_EDIT_SEND_DATA)) {
-		switch( pMsg->wParam ) {
-			case VK_RETURN:
-				OnBnClickedBtnsend();
-				return TRUE;
-			case VK_ESCAPE:
-				GetDlgItem(IDC_STR_LOC)->SetFocus();
-				GetDlgItem(IDC_STR_LOC)->SendMessage(WM_KILLFOCUS, NULL); 
-				return TRUE; 
+		if (pMsg->message == WM_KEYDOWN){
+			switch( pMsg->wParam ) {
+				case VK_RETURN:
+					OnBnClickedBtnsend();
+					return TRUE;
+				case VK_ESCAPE:
+					GetDlgItem(IDC_STR_LOC)->SetFocus();
+					GetDlgItem(IDC_STR_LOC)->SendMessage(WM_KILLFOCUS, NULL); 
+					
+					return TRUE; 
+			}
 		}
 	} else if (pMsg->message == WM_KEYDOWN) {
 		switch( pMsg->wParam ) {
@@ -584,9 +595,7 @@ BOOL CLControllerDlg::PreTranslateMessage(MSG* pMsg)
 				inputDirectioinKey(INPUT_ENTER);
 				return TRUE;
 			case VK_ESCAPE:
-				// 뒤로가기 명령 전송
 				inputDirectioinKey(INPUT_BACK);
-				// ESC키는 원래 종료를 하기때문에 이 현상을 막기위해 retrun TRUE를 해줘야됨
 				return TRUE; 
 			default:
 				// no effect
@@ -635,15 +644,19 @@ CString CLControllerDlg::AnsiToUTF8RetCString(CString inputStr)
 
 
 void CLControllerDlg::OnBnClickedBtnsend()
-{
+{ 
 	UpdateData();
 	CString strSend;
 	strSend.Format("%s", m_strSendData);
 
 	// Ansi를 UTF8로 변경하고 CString으로 리턴된 것을 전송
+	if(!strSend.Compare((_T(""))) ){
+		return;
+	}
 	sendMsg(strSend);
-	
+
 	GetDlgItem(IDC_EDIT_SEND_DATA)->SetFocus();
 	m_strSendData = "";
 	UpdateData(FALSE);
+	
 }
