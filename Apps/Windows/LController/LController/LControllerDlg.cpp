@@ -420,7 +420,7 @@ void CLControllerDlg::OnBnClickedWcam()
 		*/
 
 		// 타이머 속도설정 선택
-		SetTimer(1,2000,NULL);
+		SetTimer(1,300,NULL);
 		//SetTimer(1,((double)1/12)*1000,NULL);
 
 		viewState = TRUE;
@@ -473,7 +473,7 @@ int CLControllerDlg::recv_msg(void)
 	}
 	// BMPHEAD to IplImage
 	image->nChannels = 3;
-	image->depth = bh.bits / 3;
+	image->depth = bh.bits / image->nChannels;
 	image->origin = 0;
 	image->width = bh.width;
 	image->height = bh.depth; 
