@@ -430,10 +430,6 @@ LRESULT CLControllerDlg::OnCloseSocket(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-int CLControllerDlg::send_msg(CString data)
-{
-	return dataSocket.Send(data, data.GetLength()+1);
-}
 
 
 int CLControllerDlg::recv_msg(void)
