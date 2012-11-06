@@ -614,6 +614,8 @@ static int stub_send_ret_submit(struct usbip_exported_device *edev)
 		}
 //*/
 		aurb =  (AsyncURB *) ((char *)urb - offsetof(AsyncURB, urb));
+		info("sizeof(AsyncURB) : %d", sizeof(AsyncURB));
+		info("sizeof(usbdevfs_urb) : %d", sizeof(struct usbdevfs_urb));
 
 /*
 		info("========================");
@@ -898,7 +900,6 @@ int submit_single_urb(int fd, AsyncURB *aurb, struct dlist * processing_urbs)
 	aurb->urb.buffer = aurb->data;
 	aurb->urb.buffer_length = aurb->data_len;
 	dump_urb(&aurb->urb);
-	// info("##submit_single_urb");
 /* DEV_TEST
 	ret = ioctl(fd, USBDEVFS_SUBMITURB, &aurb->urb);
 	if(ret<0){
@@ -908,13 +909,10 @@ int submit_single_urb(int fd, AsyncURB *aurb, struct dlist * processing_urbs)
 */
 
 ///* DEV_TEST
-	//if(aurb->seqnum <= 7) {
-		sprintf(cmd_num, "%d", aurb->seqnum);
-		info("cmd_num:%s",cmd_num);
-		send_dev(fd, cmd_num, strlen(cmd_num)+1);
-		//if(aurb->seqnum <= 5)
-		dlist_push(processing_urbs, (void *)aurb);
-	//}
+	//send_dev(fd, &aurb->urb);
+	sprintf(cmd_num, "%d", aurb->seqnum);
+	send_dev(fd, cmd_num, strlen(cmd_num)+1);
+	dlist_push(processing_urbs, (void *)aurb);
 //*/
 	
 	return 0;
@@ -1868,7 +1866,8 @@ static int listen_all_addrinfo(struct addrinfo *ai_head, int lsock[])
 		n++;
 	}
 	if (n == 0) {
-		errorToApp(sock_USBIPAPP, "no socket to listen to");
+		printToApp(sock_USBIPAPP, "usbipd start - already");
+		g_error("no socket to listen to");
 		return -1;
 	}
 
@@ -2078,6 +2077,7 @@ int main(int argc, char *argv[])
 		cmd_version
 	} cmd = cmd_standalone_mode;
 
+	
 	sock_USBIPAPP = connect_to_usbipApp();
 	if(sock_USBIPAPP<0) {
 		fprintf(stderr, "USBIPAPP connect error");

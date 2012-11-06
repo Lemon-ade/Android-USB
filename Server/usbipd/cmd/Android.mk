@@ -17,9 +17,8 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../lib \
 LOCAL_CFLAGS := -Wall -W -Wstrict-prototypes -std=gnu99 -g
 LOCAL_MODULE_TAGS := eng
 LOCAL_PRELINK_MODULE := false
-LOCAL_SHARED_LIBRARIES := libc
 LOCAL_STATIC_LIBRARIES := libusbipd \
-			libglib_static \
+			libglib \
 			libsysfsd
 include $(BUILD_EXECUTABLE)
 $(warning ######   cmd end   ######)
@@ -42,12 +41,11 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../lib \
 	$(call include-path-for, glib)/glib \
 	$(call include-path-for, sysfslib) \
 	$(call include-path-for, sysfslib)/sysfslib
-LOCAL_CFLAGS := -Wall -W -Wstrict-prototypes -std=gnu99
+LOCAL_CFLAGS := -Wall -W -Wstrict-prototypes -std=gnu99 -g
 LOCAL_MODULE_TAGS := eng
 LOCAL_PRELINK_MODULE:=false
-LOCAL_SHARED_LIBRARIES := libc
 LOCAL_STATIC_LIBRARIES := libusbipd \
-		libglib_static \
+		libglib \
 		libsysfsd
 include $(BUILD_EXECUTABLE)
 $(warning ######   cmd end   ######)

@@ -32,9 +32,6 @@ static const struct option longopts[] = {
 static const char match_busid_path[] = "/sys/bus/usb/drivers/usbip/match_busid";
 
 
-
-
-
 static void show_help(void)
 {
 	printf("Usage: usbip_bind_driver [OPTION]\n");

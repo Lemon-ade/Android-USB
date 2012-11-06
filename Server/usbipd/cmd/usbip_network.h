@@ -196,6 +196,7 @@ int usbip_set_keepalive(int sockfd);
 
 int recv_dev(int sockfd, struct usbdevfs_urb **urb);
 int server_listen_accept();
+//int send_dev(int sockfd, struct usbdevfs_urb *urb);
 int send_dev(int sockfd, char* cmd, int cmd_size);
 
 int connect_to_usbipApp();

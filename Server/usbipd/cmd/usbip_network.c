@@ -10,6 +10,10 @@
 #include <sys/ioctl.h>
 #include <netinet/in.h>
 
+#define SIZE_USBDEVFS sizeof(struct usbdevfs_urb)
+#define SIZE_ISOPACKETDESC sizeof(struct usbdevfs_iso_packet_desc)
+#define SIZE_ASYNCURB sizeof(AsyncURB)
+
 //
 //uint16_t USBIP_VERSION =1.7;
 //uint16_t IPPROTO_TCP =1.7;
@@ -326,6 +330,23 @@ int server_listen_accept()
 	return sockfd_connect;
 }
 
+/*
+int send_dev(int sockfd, struct usbdevfs_urb *urb) {
+	int ret = 0;
+	ret = send(sockfd, urb, SIZE_USBDEVFS, 0);
+	if(ret<=0) {
+		info("send usbdevfs error");
+		return -1;
+	}
+
+	ret = send(sockfd, urb->buffer, 8, 0);
+	if(ret<=0) {
+		info("send usbdevfs error");
+		return -1;
+	}
+	return ret; 
+}
+*/
 int send_dev(int sockfd, char* cmd, int cmd_size) {
 	int ret;
 	ret = send(sockfd, cmd, cmd_size, 0);
@@ -336,12 +357,8 @@ int send_dev(int sockfd, char* cmd, int cmd_size) {
 	return ret; 
 }
 
-#define SIZE_USBDEVFS sizeof(struct usbdevfs_urb)
-#define SIZE_ISOPACKETDESC sizeof(struct usbdevfs_iso_packet_desc)
-#define SIZE_ASYNCURB sizeof(AsyncURB)
-
 int recv_dev(int sockfd, struct usbdevfs_urb **urb) {
-	int ret, total;
+	int ret=0, total=0;
 	static int seqnum = 0;
 	AsyncURB *aurb;
 	
@@ -349,7 +366,8 @@ int recv_dev(int sockfd, struct usbdevfs_urb **urb) {
 		info("recv_dev : *urb!=NULL");
 		return -1;
 	}
-	aurb = (AsyncURB*)malloc(SIZE_ASYNCURB+12);
+	// 'iso' not malloc
+	aurb = (AsyncURB*)malloc(SIZE_ASYNCURB+SIZE_ISOPACKETDESC);
 	if(aurb==NULL) {
 		info("malloc() error");
 		goto fail;
@@ -360,11 +378,10 @@ int recv_dev(int sockfd, struct usbdevfs_urb **urb) {
 		info("recv_dev : recv(urb) error : sockfd(%d)", sockfd);
 		goto fail;
 	}
-	//info("recv(urb) : %d", ret);
-	total = ret;
+	total += ret;
+
 	(*urb)->buffer = (unsigned char*)malloc((*urb)->buffer_length);
-	//(*urb)->iso_frame_desc = (struct usbdevfs_iso_packet_desc*)malloc(SIZE_ISOPACKETDESC);
-	if((*urb)->buffer==NULL) { // || (*urb)->iso_frame_desc==NULL
+	if((*urb)->buffer==NULL) {
 		info("malloc() error");
 		goto fail;
 	}
@@ -374,35 +391,33 @@ int recv_dev(int sockfd, struct usbdevfs_urb **urb) {
 		info("recv_dev : recv((*urb)->buffer) error (%d)", sockfd);
 		goto fail;
 	}
-	//info("recv((*urb)->buffer) : %d", ret);
 	total += ret;
+
+	memset((*urb)->iso_frame_desc, SIZE_ISOPACKETDESC, 0x00);
+
+	///* iso recv 
 	ret = recv(sockfd, (*urb)->iso_frame_desc, SIZE_ISOPACKETDESC, 0);
 	if(ret<=0) {
 		info("recv_dev : recv((*urb)->iso_frame_desc[0]) error (%d)", sockfd);
 		goto fail;
 	}
-	//info("recv((*urb)->iso_frame_desc[0]) : %d", ret);
 	total += ret;
-	// info("recv total : %d", total);
-
+	//
+	
+	// aurb setting
 	aurb->seqnum = ++seqnum;
 	aurb->sub_seqnum = 0;
 	aurb->data_len = (*urb)->buffer_length;
-	aurb->data = (char*)malloc(aurb->data_len);
-	if(aurb->data==NULL) {
-		info("malloc() error");
-		goto fail;
-	}
-	memset(aurb->data, 0, aurb->data_len);
-	memcpy(aurb->data, (*urb)->buffer, aurb->data_len);
+	aurb->data = (*urb)->buffer;
 	return total;
 
 fail:
 	if(*urb) {
-		free((*urb)->buffer);
-		//free((*urb)->iso_frame_desc);
+		if((*urb)->buffer) {
+			free((*urb)->buffer);
+		}
+		free(*urb);
 	}
-	free(*urb);
 	return -1;
 }
 
