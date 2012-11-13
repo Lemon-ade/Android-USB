@@ -565,10 +565,7 @@ int main(int argc, char *argv[])
 {
 
 	int cmd;
-	char option[MAXLINE];
-	char address[MAXLINE];
-	char id[MAXLINE];	
-	
+
 	info("%s\n",version);
 	
 	if(init_winsock()){
@@ -578,44 +575,13 @@ int main(int argc, char *argv[])
 	
 	connect_server();
 
-
-	argv[0] = "usbip";
-	
-	while(1){
-		argv[2] = NULL;
-		argv[3] = NULL;
-
-		memset(&option, 0, MAXLINE);
-		memset(&address, 0, MAXLINE);
-
-		recv_msg(client_socket, option, MAXLINE);
-		if(!strcmp(option,"q")){
-			break;
-		}
-		recv_msg(client_socket, address, MAXLINE);
-	
-		argv[1] = option;
-		argv[2] = address;
-	
-		if(!strcmp(option,"-a")){
-			
-			argc = 4;
-			recv_msg(client_socket, id, MAXLINE);
-			argv[3] = id;
-
-		}else if(!strcmp(option,"-l")){
-			argc = 3;
-		}else if(!strcmp(option,"-d")){
-			argc = 3;
-				detach_port("3240");
-		}else{
-			argc = 3;
-		}
 		optind = 1;
+		printf("8\n");
 		cmd = parse_opt(argc, argv);
-
+		printf("9\n");
 		switch(cmd) {
 			case CMD_ATTACH:
+				printf("10\n");
 				if (optind == argc - 2)
 					attach_device(argv[optind], argv[optind+1]);
 				else
@@ -646,6 +612,6 @@ int main(int argc, char *argv[])
 			default:
 				show_help(argv[0]);
 		}
-	}
+
 	return 0;
 }

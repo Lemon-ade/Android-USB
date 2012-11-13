@@ -1,0 +1,27 @@
+﻿빌드 시작: 2012-11-13 오후 4:25:39
+     1>3 노드의 "C:\Users\lemonade\Documents\GitHub\Android-USB\Client\usbip\usbip_driver.vcxproj" 프로젝트(build 대상)입니다.
+     1>Build:
+         b.bat
+         시스템이 지정된 드라이브를 찾을 수 없습니다.
+         시스템이 지정된 드라이브를 찾을 수 없습니다.
+         시스템이 지정된 드라이브를 찾을 수 없습니다.
+         하위 디렉터리 또는 파일 output이(가) 이미 있습니다.
+                 1개 파일이 복사되었습니다.
+         지정된 경로를 찾을 수 없습니다.
+         지정된 경로를 찾을 수 없습니다.
+         Done Adding Additional Store
+         Successfully signed and timestamped: output\USBIPEnum_x86.sys
+         
+         Done Adding Additional Store
+         Successfully signed and timestamped: output\USBIPEnum_x64.sys
+         
+         'inf2cat'은(는) 내부 또는 외부 명령, 실행할 수 있는 프로그램, 또는
+         배치 파일이 아닙니다.
+         Done Adding Additional Store
+         Successfully signed and timestamped: output\usbipenum.cat
+         
+     1>"C:\Users\lemonade\Documents\GitHub\Android-USB\Client\usbip\usbip_driver.vcxproj" 프로젝트를 빌드했습니다(build 대상).
+
+빌드했습니다.
+
+경과 시간: 00:00:04.09
